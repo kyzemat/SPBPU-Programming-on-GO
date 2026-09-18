@@ -19,8 +19,6 @@ var RandomSecondNames = []string{"Кротов", "Опалюк", "Сердюко
 var RandomLastNames = []string{"Евгеньевич", "Дмитриевич", "Александрович", "Иммануилович", "Саныч"}
 var students []Student
 
-func main() {
-}
 
 func AddStudentRandom() {
 	name := RandomNames[rand.Intn(len(RandomNames))]
