@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"sort"
+	"strings"
 )
 
 type Student struct {
@@ -18,9 +20,6 @@ var RandomNames = []string{"Алексей", "Петр", "Генри", "Ким",
 var RandomSecondNames = []string{"Кротов", "Опалюк", "Сердюков", "Шифонер", "Булков"}
 var RandomLastNames = []string{"Евгеньевич", "Дмитриевич", "Александрович", "Иммануилович", "Саныч"}
 var students []Student
-
-func main() {
-}
 
 func AddStudentRandom() {
 	name := RandomNames[rand.Intn(len(RandomNames))]
@@ -44,35 +43,22 @@ func AddStudentRandom() {
 
 	fmt.Printf("✅ Студент %s %s добавлен!\n", name, secondName)
 }
+
 func AddStudentsManually() {
-	var name string
-	var secondName string
-	var lastName string
-	var age uint8
-	var avgScore float32
-	var expelled bool
-	fmt.Print("Введите имя студента: ")
-	fmt.Scan(&name)
-	fmt.Print("Введите фамилию студента: ")
-	fmt.Scan(&secondName)
-	fmt.Print("Введите отчество студента: ")
-	fmt.Scan(&lastName)
-	fmt.Print("Введите возраст студента: ")
-	fmt.Scan(&age)
-	fmt.Print("Введите средний балл студента: ")
-	fmt.Scan(&avgScore)
-	fmt.Print("Укажите, был ли отчислен студент или нет(true или false): ")
-	fmt.Scan(&expelled)
-	student := Student{
-		Name:       name,
-		SecondName: secondName,
-		LastName:   lastName,
-		Age:        age,
-		AvgScore:   avgScore,
-		Expelled:   expelled,
-	}
-	students = append(students, student)
+
+	name := readString("Введите имя студента: ")
+	secondName := readString("Введите фамилию студента: ")
+	lastName := readString("Введите отчество студента: ")
+	age := readUint8("Введите возраст студента(14 - 120): ", 14, 120)
+	avgScore := readFloat32("Введите средний балл студента (0 - 5): ", 0, 5)
+	expelled := readBool("Укажите, был ли отчислен (true/false): ")
+
+	students = append(students, Student{
+		Name: name, SecondName: secondName, LastName: lastName,
+		Age: age, AvgScore: avgScore, Expelled: expelled,
+	})
 	fmt.Printf("✅ Студент %s %s добавлен!\n", name, secondName)
+
 }
 
 // -----------------------------------------------------------------------------------------------------
@@ -121,19 +107,30 @@ func main() {
 		fmt.Println("0. Выход")
 		fmt.Println("===========================")
 
-		var choice int
+		var choice uint8
 		fmt.Print("Выберите действие: ")
-		fmt.Scan(&choice)
+		if _, err := fmt.Scan(&choice); err != nil {
+			fmt.Println("❌ Введите число от 0 до 6")
+			var dump string
+			fmt.Scanln(&dump)
+			continue
+		}
+
 		switch choice {
 		case 1:
 			AddStudentsManually()
 		case 2:
 			AddStudentRandom()
 		case 3:
-			var count int
+			var count uint8
 			fmt.Print("Сколько студентов добавить? ")
-			fmt.Scan(&count)
-			for i := 0; i < count; i++ {
+			if _, err := fmt.Scan(&count); err != nil {
+				fmt.Println("❌ Введите число от 0 до 255")
+				var dump string
+				fmt.Scanln(&dump)
+				continue
+			}
+			for i := uint8(0); i < count; i++ {
 				AddStudentRandom()
 			}
 		case 4:
@@ -150,5 +147,68 @@ func main() {
 		default:
 			fmt.Println("❌ Такого пункта меню нет.")
 		}
+	}
+}
+
+func readUint8(prompt string, min, max uint8) uint8 {
+	var v uint8
+	for {
+		fmt.Print(prompt)
+		if _, err := fmt.Scan(&v); err != nil {
+			fmt.Println("❌ Введите целое число")
+			var dump string
+			fmt.Scanln(&dump) // чистим буфер от мусора
+			continue
+		}
+		if v < min || v > max {
+			fmt.Printf("❌ Число должно быть от %d до %d\n", min, max)
+			continue
+		}
+		return v
+	}
+}
+
+func readFloat32(prompt string, min, max float32) float32 {
+	var v float32
+	for {
+		fmt.Print(prompt)
+		if _, err := fmt.Scan(&v); err != nil {
+			fmt.Println("❌ Введите число, например 4.5")
+			var dump string
+			fmt.Scanln(&dump)
+			continue
+		}
+		if v < min || v > max {
+			fmt.Printf("❌ Число должно быть от %.2f до %.2f\n", min, max)
+			continue
+		}
+		return v
+	}
+}
+
+func readBool(prompt string) bool {
+	for {
+		fmt.Print(prompt)
+		var s string
+		fmt.Scan(&s)
+		switch strings.ToLower(s) {
+		case "true", "1", "да", "yes", "y":
+			return true
+		case "false", "0", "нет", "no", "n":
+			return false
+		default:
+			fmt.Println("❌ Введите true или false")
+		}
+	}
+}
+
+func readString(prompt string) string {
+	var s string
+	for {
+		fmt.Print(prompt)
+		if _, err := fmt.Scan(&s); err == nil {
+			return s
+		}
+		fmt.Println("❌ Поле не может быть пустым")
 	}
 }
