@@ -4,10 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
-<<<<<<< HEAD
-=======
 	"strings"
->>>>>>> f74fcfb907538fcb4c24cef702f9b3d7d4afa079
 )
 
 type Student struct {
