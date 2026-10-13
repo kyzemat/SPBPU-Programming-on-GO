@@ -5,8 +5,6 @@ import (
 	"math"
 )
 
-const eps = 1e-9
-
 type Triangle struct {
 	A float64
 	B float64
@@ -37,11 +35,6 @@ func (t Triangle) Area() float64 {
 			(p - t.B) *
 			(p - t.C),
 	)
-}
-
-// Сравнение чисел с учётом погрешности float64
-func equal(a, b float64) bool {
-	return math.Abs(a-b) < eps
 }
 
 // Определение типа по сторонам
@@ -164,10 +157,4 @@ func CreateTriangle() Triangle {
 
 		return triangle
 	}
-}
-
-func main() {
-
-	triangle := CreateTriangle()
-	triangle.PrintInfo()
 }
