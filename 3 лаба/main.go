@@ -6,7 +6,51 @@ import (
 )
 
 func main() {
+<<<<<<< HEAD
+	for {
+		fmt.Println("\n========== МЕНЮ ==========")
+		fmt.Println("1 — Ряд Лейбница для π")
+		fmt.Println("2 — Ряд Тейлора для sin(x), cos(x), exp(x)")
+		fmt.Println("0 — Выход")
+		fmt.Print("Ваш выбор: ")
+
+		var choice int
+		if _, err := fmt.Scan(&choice); err != nil {
+			fmt.Println("❌ Ошибка: введите 0, 1 или 2.")
+			var trash string
+			fmt.Scan(&trash)
+			continue
+		}
+
+		switch choice {
+		case 1:
+			runLeibniz()
+		case 2:
+			runTaylor()
+		case 0:
+			fmt.Println("До свидания!")
+			return
+		default:
+			fmt.Println("❌ Нет такого пункта меню. Введите 0, 1 или 2.")
+		}
+	}
+}
+
+// runTaylor — режим «Ряд Тейлора».
+func runTaylor() {
+	fmt.Println("\nРяд Тейлора для sin(x), cos(x), exp(x)")
+
+	x := ReadX()
+	eps := ReadEps()
+	PrintTaylorTable(x, eps)
+}
+
+// runLeibniz — режим «Ряд Лейбница» (прежний код main).
+func runLeibniz() {
+	fmt.Println("\nРяд Лейбница: π = 4·(1 − 1/3 + 1/5 − 1/7 + ...)")
+=======
 	fmt.Println("Ряд Лейбница: π = 4·(1 − 1/3 + 1/5 − 1/7 + ...)")
+>>>>>>> 292097ec1bb3d29703654f248f7667ce71bd2401
 
 	// 1. Считываем точность с консоли
 	eps := ReadEps()
