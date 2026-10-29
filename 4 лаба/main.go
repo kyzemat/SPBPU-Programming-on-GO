@@ -19,6 +19,7 @@ func main() {
 		fmt.Println("1 — Рассчитать цену с цепочкой модификаторов")
 		fmt.Println("2 — Демонстрация замыканий (счетчик вызовов)")
 		fmt.Println("3 — Демонстрация анонимных функций")
+		fmt.Println("4 — Множественный заказ")
 		fmt.Println("0 — Выход")
 		fmt.Print("Ваш выбор: ")
 
@@ -27,7 +28,7 @@ func main() {
 		choice, err := strconv.Atoi(choiceStr)
 
 		if err != nil {
-			fmt.Println("❌ Ошибка: введите число (0, 1, 2 или 3).")
+			fmt.Println("❌ Ошибка: введите число (0, 1, 2, 3 или 4).")
 			continue
 		}
 
@@ -38,6 +39,8 @@ func main() {
 			runClosureDemo()
 		case 3:
 			runAnonymousDemo()
+		case 4:
+			runOrderDemo(reader)
 		case 0:
 			fmt.Println("До свидания!")
 			return
@@ -141,6 +144,38 @@ func runAnonymousDemo() {
 	finalPrice := modifier(basePrice)
 	fmt.Printf("\nЦена %.2f с наценкой 50 и округлением: %.0f\n", basePrice, finalPrice)
 	fmt.Println("Анонимная функция создана прямо в месте вызова, без имени.")
+}
+
+// runOrderDemo — режим 4: заказ из книг (Product, Order, Stringer).
+func runOrderDemo(reader *bufio.Reader) {
+	fmt.Println("\n--- Заказ из книг ---")
+
+	order := pricing.NewOrder(1, "Студент").Add(
+		pricing.NewProduct("Язык программирования Go", "Донован, Керниган", 1800),
+		pricing.NewProduct("Чистый код", "Р. Мартин", 1500),
+		pricing.NewProduct("Совершенный код", "С. Макконнелл", 2200),
+	)
+
+	// Вывод через Stringer: fmt сам вызывает метод String().
+	fmt.Println(order)
+	for _, item := range order.Items {
+		fmt.Println("  ", item)
+	}
+
+	fmt.Print("\nВведите процент скидки на каждую книгу: ")
+	discount := readFloat(reader)
+	fmt.Print("Введите процент налога: ")
+	tax := readFloat(reader)
+
+	// Замыкание, захватывающее введённые значения.
+	mod := pricing.CombineModifiers(
+		pricing.WithDiscount(discount),
+		pricing.WithTax(tax),
+		pricing.WithRounding(2),
+	)
+
+	fmt.Println()
+	fmt.Println(order.Receipt(mod))
 }
 
 // --- Вспомогательные функции для безопасного ввода ---
