@@ -1,0 +1,122 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	for {
+		fmt.Println("\n========== МЕНЮ: АЛГОРИТМЫ ==========")
+		fmt.Println("1 — Course Schedule (Расписание курсов)")
+		fmt.Println("2 — Network Delay Time (Задержка в сети)")
+		fmt.Println("3 — Binary Tree Level Order Traversal (Обход по уровням)")
+		fmt.Println("4 — Populating Next Right Pointers (Связывание указателей)")
+		fmt.Println("0 — Выход")
+		fmt.Print("Ваш выбор: ")
+
+		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(input)
+		choice, err := strconv.Atoi(input)
+
+		if err != nil {
+			fmt.Println("❌ Ошибка: введите число (0-4).")
+			continue
+		}
+
+		switch choice {
+		case 1:
+			demoCourseSchedule()
+		case 2:
+			demoNetworkDelay()
+		case 3:
+			demoLevelOrder()
+		case 4:
+			demoConnect()
+		case 0:
+			fmt.Println("До свидания!")
+			return
+		default:
+			fmt.Println("❌ Нет такого пункта. Введите 0-4.")
+		}
+	}
+}
+
+// ============================================================
+// ДЕМОНСТРАЦИИ
+// ============================================================
+
+func demoCourseSchedule() {
+	fmt.Println("\n--- Задача 1: Course Schedule ---")
+	fmt.Println("Вход: numCourses=2, prerequisites=[[1,0]]")
+	fmt.Println("Выход:", CanFinish(2, [][]int{{1, 0}}))
+
+	fmt.Println("\nВход: numCourses=2, prerequisites=[[1,0],[0,1]]")
+	fmt.Println("Выход:", CanFinish(2, [][]int{{1, 0}, {0, 1}}))
+}
+
+func demoNetworkDelay() {
+	fmt.Println("\n--- Задача 2: Network Delay Time ---")
+	fmt.Println("Вход: times=[[2,1,1],[2,3,1],[3,4,1]], n=4, k=2")
+	fmt.Println("Выход:", NetworkDelayTime([][]int{{2, 1, 1}, {2, 3, 1}, {3, 4, 1}}, 4, 2))
+
+	fmt.Println("\nВход: times=[[1,2,1]], n=2, k=1")
+	fmt.Println("Выход:", NetworkDelayTime([][]int{{1, 2, 1}}, 2, 1))
+
+	fmt.Println("\nВход: times=[[1,2,1]], n=2, k=2")
+	fmt.Println("Выход:", NetworkDelayTime([][]int{{1, 2, 1}}, 2, 2))
+}
+
+func demoLevelOrder() {
+	fmt.Println("\n--- Задача 3: Binary Tree Level Order Traversal ---")
+	// Строим дерево [3,9,20,null,null,15,7]
+	root := &TreeNode{Val: 3}
+	root.Left = &TreeNode{Val: 9}
+	root.Right = &TreeNode{Val: 20}
+	root.Right.Left = &TreeNode{Val: 15}
+	root.Right.Right = &TreeNode{Val: 7}
+
+	fmt.Println("Дерево: [3,9,20,null,null,15,7]")
+	fmt.Println("Выход:", LevelOrder(root))
+
+	// Пустое дерево
+	fmt.Println("\nПустое дерево:")
+	fmt.Println("Выход:", LevelOrder(nil))
+}
+
+func demoConnect() {
+	fmt.Println("\n--- Задача 4: Populating Next Right Pointers ---")
+	// Строим идеальное дерево [1,2,3,4,5,6,7]
+	root := &Node{Val: 1}
+	root.Left = &Node{Val: 2}
+	root.Right = &Node{Val: 3}
+	root.Left.Left = &Node{Val: 4}
+	root.Left.Right = &Node{Val: 5}
+	root.Right.Left = &Node{Val: 6}
+	root.Right.Right = &Node{Val: 7}
+
+	Connect(root)
+
+	// Выводим результат в формате: 1->nil, 2->3->nil, ...
+	fmt.Println("Дерево: [1,2,3,4,5,6,7]")
+	fmt.Println("Результат связывания Next-указателей:")
+
+	leftmost := root
+	for leftmost != nil {
+		cur := leftmost
+		for cur != nil {
+			if cur.Next != nil {
+				fmt.Printf("%d -> ", cur.Val)
+			} else {
+				fmt.Printf("%d -> nil\n", cur.Val)
+			}
+			cur = cur.Next
+		}
+		leftmost = leftmost.Left
+	}
+}
