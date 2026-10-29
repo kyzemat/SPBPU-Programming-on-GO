@@ -33,7 +33,9 @@ func main() {
 	}
 
 	// Доказательство, что ColoredShape тоже реализует Shape
-	fmt.Println("\n--- Проверка полиморфизма ---")
-	var shape shapes.Shape = redCircle
-	fmt.Printf("ColoredShape as Shape: Area = %.2f\n", shape.Area())
+	fmt.Println("\n--- PrintShapesInfo и TotalArea ---")
+	shapes.PrintShapesInfo(allShapes)
+	fmt.Printf("Суммарная площадь базовых фигур: %.2f\n", shapes.TotalArea(allShapes...))
+	fmt.Printf("Суммарная площадь цветных фигур: %.2f\n", shapes.TotalArea(coloredShapes...))
+	fmt.Printf("Площадь круга и прямоугольника:  %.2f\n", shapes.TotalArea(circle, rect))
 }
